@@ -9,5 +9,5 @@ Cách chạy project:
  + gõ: python manager.py runserver
 
 /admin
-user: admin
-password: 1234321admin
+ + user: admin
+ + password: 1234321admin
