@@ -7,4 +7,6 @@ Cách chạy project:
  + Import database classroom.sql trong folder "database"
  + Mở CMD tại thư mục project
  + gõ: python manager.py runserver
-
+/admin
+user: admin
+password: 1234321admin
