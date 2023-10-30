@@ -75,11 +75,16 @@ WSGI_APPLICATION = "Classroom.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'classroom',  # Tên cơ sở dữ liệu của bạn
+        'USER': 'root',      # Tên người dùng cơ sở dữ liệu
+        'PASSWORD': '',  # Mật khẩu cơ sở dữ liệu
+        'HOST': 'localhost',  # Địa chỉ máy chủ MySQL
+        'PORT': '3306',  # Cổng MySQL
     }
 }
+
 
 
 # Password validation
