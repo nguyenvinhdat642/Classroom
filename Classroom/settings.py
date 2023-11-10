@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "home",
+    "login",
 ]
 
 MIDDLEWARE = [
@@ -77,13 +78,17 @@ WSGI_APPLICATION = "Classroom.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'classroom',  # Tên cơ sở dữ liệu của bạn
-        'USER': 'root',      # Tên người dùng cơ sở dữ liệu
-        'PASSWORD': '',  # Mật khẩu cơ sở dữ liệu
-        'HOST': 'localhost',  # Địa chỉ máy chủ MySQL
-        'PORT': '3306',  # Cổng MySQL
+        'NAME': 'classroom',  # Your database name
+        'USER': 'root',      # Your database user
+        'PASSWORD': '',      # Your database password
+        'HOST': 'localhost',  # Your MySQL server address
+        'PORT': '3306',       # Your MySQL server port
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        },
     }
 }
+
 
 
 

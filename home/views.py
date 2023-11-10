@@ -15,3 +15,4 @@ def news(request):
 
 def contact(request):
     return render(request, 'frontend/contact.html')
+
