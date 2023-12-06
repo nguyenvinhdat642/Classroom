@@ -1,135 +1,467 @@
--- Tạo cơ sở dữ liệu Classroom
-CREATE DATABASE IF NOT EXISTS Classroom;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th12 06, 2023 lúc 07:32 AM
+-- Phiên bản máy phục vụ: 10.4.28-MariaDB
+-- Phiên bản PHP: 8.0.28
 
--- Sử dụng cơ sở dữ liệu Classroom
-USE Classroom;
-
--- Tạo bảng Users
-CREATE TABLE IF NOT EXISTS Users (
-    userID INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    confirmation_code VARCHAR(255)
-);
-
--- Tạo bảng Courses
-CREATE TABLE IF NOT EXISTS Courses (
-    courseID INT AUTO_INCREMENT PRIMARY KEY,
-    courseName VARCHAR(255) NOT NULL,
-    teacherID INT,
-    description TEXT,
-    bai_tap JSON,
-    FOREIGN KEY (teacherID) REFERENCES Users(userID)
-);
-
--- Tạo bảng Enrollments
-CREATE TABLE IF NOT EXISTS Enrollments (
-    enrollmentID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    studentID INT,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID),
-    FOREIGN KEY (studentID) REFERENCES Users(userID)
-);
-
--- Tạo bảng Schedules
-CREATE TABLE IF NOT EXISTS Schedules (
-    scheduleID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    ngay_hoc DATE,
-    gio_hoc TIME,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID)
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
--- Tạo bảng Assignments
-CREATE TABLE IF NOT EXISTS Assignments (
-    assignmentID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    assignmentName VARCHAR(255) NOT NULL,
-    deadline DATE,
-    diem_so_toi_da INT,
-    ngay_tao DATE,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- Tạo bảng Submissions
-CREATE TABLE IF NOT EXISTS Submissions (
-    submissionID INT AUTO_INCREMENT PRIMARY KEY,
-    assignmentID INT,
-    studentID INT,
-    noi_dung TEXT,
-    ngay_nop DATE,
-    diem_so INT,
-    FOREIGN KEY (assignmentID) REFERENCES Assignments(assignmentID),
-    FOREIGN KEY (studentID) REFERENCES Users(userID)
-);
+--
+-- Cơ sở dữ liệu: `classroom`
+--
 
--- Tạo bảng Discussions
-CREATE TABLE IF NOT EXISTS Discussions (
-    discussionID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    title VARCHAR(255) NOT NULL,
-    noi_dung TEXT,
-    ngay_tao DATE,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID)
-);
+-- --------------------------------------------------------
 
--- Tạo bảng Discussion_Users
-CREATE TABLE IF NOT EXISTS Discussion_Users (
-    discussionID INT,
-    userID INT,
-    FOREIGN KEY (discussionID) REFERENCES Discussions(discussionID),
-    FOREIGN KEY (userID) REFERENCES Users(userID)
-);
+--
+-- Cấu trúc bảng cho bảng `adminnotifications`
+--
 
--- Tạo bảng Lectures
-CREATE TABLE IF NOT EXISTS Lectures (
-    lectureID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    title VARCHAR(255) NOT NULL,
-    noi_dung TEXT,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID)
-);
+CREATE TABLE `adminnotifications` (
+  `notificationID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `noi_dung` text DEFAULT NULL,
+  `ngay_tao` date DEFAULT NULL,
+  `loai_thong_bao` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Tạo bảng Announcements
-CREATE TABLE IF NOT EXISTS Announcements (
-    announcementID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    title VARCHAR(255) NOT NULL,
-    noi_dung TEXT,
-    ngay_dang DATE,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID)
-);
+-- --------------------------------------------------------
 
--- Tạo bảng Instructors
-CREATE TABLE IF NOT EXISTS Instructors (
-    instructorID INT AUTO_INCREMENT PRIMARY KEY,
-    userID INT,
-    noi_dung_giang_vien TEXT,
-    FOREIGN KEY (userID) REFERENCES Users(userID)
-);
+--
+-- Cấu trúc bảng cho bảng `announcements`
+--
 
--- Tạo bảng AdminNotifications
-CREATE TABLE IF NOT EXISTS AdminNotifications (
-    notificationID INT AUTO_INCREMENT PRIMARY KEY,
-    userID INT,
-    title VARCHAR(255) NOT NULL,
-    noi_dung TEXT,
-    ngay_tao DATE,
-    loai_thong_bao VARCHAR(50) NOT NULL,
-    FOREIGN KEY (userID) REFERENCES Users(userID)
-);
+CREATE TABLE `announcements` (
+  `announcementID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `noi_dung` text DEFAULT NULL,
+  `ngay_dang` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Tạo bảng Grades
-CREATE TABLE IF NOT EXISTS Grades (
-    gradeID INT AUTO_INCREMENT PRIMARY KEY,
-    courseID INT,
-    studentID INT,
-    assignmentID INT,
-    diem_so INT,
-    FOREIGN KEY (courseID) REFERENCES Courses(courseID),
-    FOREIGN KEY (studentID) REFERENCES Users(userID),
-    FOREIGN KEY (assignmentID) REFERENCES Assignments(assignmentID)
-);
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `assignments`
+--
+
+CREATE TABLE `assignments` (
+  `assignmentID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `assignmentName` varchar(255) NOT NULL,
+  `deadline` date DEFAULT NULL,
+  `diem_so_toi_da` int(11) DEFAULT NULL,
+  `ngay_tao` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `courses`
+--
+
+CREATE TABLE `courses` (
+  `courseID` int(11) NOT NULL,
+  `courseName` varchar(255) NOT NULL,
+  `teacherID` int(11) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `bai_tap` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `discussions`
+--
+
+CREATE TABLE `discussions` (
+  `discussionID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `noi_dung` text DEFAULT NULL,
+  `ngay_tao` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `discussion_users`
+--
+
+CREATE TABLE `discussion_users` (
+  `discussionID` int(11) DEFAULT NULL,
+  `userID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `enrollments`
+--
+
+CREATE TABLE `enrollments` (
+  `enrollmentID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `studentID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `grades`
+--
+
+CREATE TABLE `grades` (
+  `gradeID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `studentID` int(11) DEFAULT NULL,
+  `assignmentID` int(11) DEFAULT NULL,
+  `diem_so` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `instructors`
+--
+
+CREATE TABLE `instructors` (
+  `instructorID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
+  `noi_dung_giang_vien` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `lectures`
+--
+
+CREATE TABLE `lectures` (
+  `lectureID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `noi_dung` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `schedules`
+--
+
+CREATE TABLE `schedules` (
+  `scheduleID` int(11) NOT NULL,
+  `courseID` int(11) DEFAULT NULL,
+  `ngay_hoc` date DEFAULT NULL,
+  `gio_hoc` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `submissions`
+--
+
+CREATE TABLE `submissions` (
+  `submissionID` int(11) NOT NULL,
+  `assignmentID` int(11) DEFAULT NULL,
+  `studentID` int(11) DEFAULT NULL,
+  `noi_dung` text DEFAULT NULL,
+  `ngay_nop` date DEFAULT NULL,
+  `diem_so` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `users`
+--
+
+CREATE TABLE `users` (
+  `userID` int(11) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `role` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `users`
+--
+
+INSERT INTO `users` (`userID`, `password`, `email`, `role`) VALUES
+(1, 'password123', 'user1@example.com', 'user'),
+(2, '$2b$10$8UwpW22Vn5I1vsBBzn5sLu95D68IK0lKC5HSjlK6rJNurOhoDqHfO', 'nguyenvinhdat12a2@gmail.com', 'admin'),
+(3, '$2b$10$uQf1xnVLk92Zx3mKffJOdet1TXBdwHrbFh4c99Rt/s8ZzNfAFVVSS', 'luphi2158@gmail.com', 'user');
+
+--
+-- Chỉ mục cho các bảng đã đổ
+--
+
+--
+-- Chỉ mục cho bảng `adminnotifications`
+--
+ALTER TABLE `adminnotifications`
+  ADD PRIMARY KEY (`notificationID`),
+  ADD KEY `userID` (`userID`);
+
+--
+-- Chỉ mục cho bảng `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`announcementID`),
+  ADD KEY `courseID` (`courseID`);
+
+--
+-- Chỉ mục cho bảng `assignments`
+--
+ALTER TABLE `assignments`
+  ADD PRIMARY KEY (`assignmentID`),
+  ADD KEY `courseID` (`courseID`);
+
+--
+-- Chỉ mục cho bảng `courses`
+--
+ALTER TABLE `courses`
+  ADD PRIMARY KEY (`courseID`),
+  ADD KEY `teacherID` (`teacherID`);
+
+--
+-- Chỉ mục cho bảng `discussions`
+--
+ALTER TABLE `discussions`
+  ADD PRIMARY KEY (`discussionID`),
+  ADD KEY `courseID` (`courseID`);
+
+--
+-- Chỉ mục cho bảng `discussion_users`
+--
+ALTER TABLE `discussion_users`
+  ADD KEY `discussionID` (`discussionID`),
+  ADD KEY `userID` (`userID`);
+
+--
+-- Chỉ mục cho bảng `enrollments`
+--
+ALTER TABLE `enrollments`
+  ADD PRIMARY KEY (`enrollmentID`),
+  ADD KEY `courseID` (`courseID`),
+  ADD KEY `studentID` (`studentID`);
+
+--
+-- Chỉ mục cho bảng `grades`
+--
+ALTER TABLE `grades`
+  ADD PRIMARY KEY (`gradeID`),
+  ADD KEY `courseID` (`courseID`),
+  ADD KEY `studentID` (`studentID`),
+  ADD KEY `assignmentID` (`assignmentID`);
+
+--
+-- Chỉ mục cho bảng `instructors`
+--
+ALTER TABLE `instructors`
+  ADD PRIMARY KEY (`instructorID`),
+  ADD KEY `userID` (`userID`);
+
+--
+-- Chỉ mục cho bảng `lectures`
+--
+ALTER TABLE `lectures`
+  ADD PRIMARY KEY (`lectureID`),
+  ADD KEY `courseID` (`courseID`);
+
+--
+-- Chỉ mục cho bảng `schedules`
+--
+ALTER TABLE `schedules`
+  ADD PRIMARY KEY (`scheduleID`),
+  ADD KEY `courseID` (`courseID`);
+
+--
+-- Chỉ mục cho bảng `submissions`
+--
+ALTER TABLE `submissions`
+  ADD PRIMARY KEY (`submissionID`),
+  ADD KEY `assignmentID` (`assignmentID`),
+  ADD KEY `studentID` (`studentID`);
+
+--
+-- Chỉ mục cho bảng `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`userID`);
+
+--
+-- AUTO_INCREMENT cho các bảng đã đổ
+--
+
+--
+-- AUTO_INCREMENT cho bảng `adminnotifications`
+--
+ALTER TABLE `adminnotifications`
+  MODIFY `notificationID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `announcements`
+--
+ALTER TABLE `announcements`
+  MODIFY `announcementID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `assignments`
+--
+ALTER TABLE `assignments`
+  MODIFY `assignmentID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `courses`
+--
+ALTER TABLE `courses`
+  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `discussions`
+--
+ALTER TABLE `discussions`
+  MODIFY `discussionID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `enrollments`
+--
+ALTER TABLE `enrollments`
+  MODIFY `enrollmentID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `grades`
+--
+ALTER TABLE `grades`
+  MODIFY `gradeID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `instructors`
+--
+ALTER TABLE `instructors`
+  MODIFY `instructorID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `lectures`
+--
+ALTER TABLE `lectures`
+  MODIFY `lectureID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `schedules`
+--
+ALTER TABLE `schedules`
+  MODIFY `scheduleID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `submissions`
+--
+ALTER TABLE `submissions`
+  MODIFY `submissionID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `users`
+--
+ALTER TABLE `users`
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Các ràng buộc cho các bảng đã đổ
+--
+
+--
+-- Các ràng buộc cho bảng `adminnotifications`
+--
+ALTER TABLE `adminnotifications`
+  ADD CONSTRAINT `adminnotifications_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`);
+
+--
+-- Các ràng buộc cho bảng `announcements`
+--
+ALTER TABLE `announcements`
+  ADD CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`);
+
+--
+-- Các ràng buộc cho bảng `assignments`
+--
+ALTER TABLE `assignments`
+  ADD CONSTRAINT `assignments_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`);
+
+--
+-- Các ràng buộc cho bảng `courses`
+--
+ALTER TABLE `courses`
+  ADD CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`teacherID`) REFERENCES `users` (`userID`);
+
+--
+-- Các ràng buộc cho bảng `discussions`
+--
+ALTER TABLE `discussions`
+  ADD CONSTRAINT `discussions_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`);
+
+--
+-- Các ràng buộc cho bảng `discussion_users`
+--
+ALTER TABLE `discussion_users`
+  ADD CONSTRAINT `discussion_users_ibfk_1` FOREIGN KEY (`discussionID`) REFERENCES `discussions` (`discussionID`),
+  ADD CONSTRAINT `discussion_users_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`);
+
+--
+-- Các ràng buộc cho bảng `enrollments`
+--
+ALTER TABLE `enrollments`
+  ADD CONSTRAINT `enrollments_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`),
+  ADD CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `users` (`userID`);
+
+--
+-- Các ràng buộc cho bảng `grades`
+--
+ALTER TABLE `grades`
+  ADD CONSTRAINT `grades_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`),
+  ADD CONSTRAINT `grades_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `users` (`userID`),
+  ADD CONSTRAINT `grades_ibfk_3` FOREIGN KEY (`assignmentID`) REFERENCES `assignments` (`assignmentID`);
+
+--
+-- Các ràng buộc cho bảng `instructors`
+--
+ALTER TABLE `instructors`
+  ADD CONSTRAINT `instructors_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`);
+
+--
+-- Các ràng buộc cho bảng `lectures`
+--
+ALTER TABLE `lectures`
+  ADD CONSTRAINT `lectures_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`);
+
+--
+-- Các ràng buộc cho bảng `schedules`
+--
+ALTER TABLE `schedules`
+  ADD CONSTRAINT `schedules_ibfk_1` FOREIGN KEY (`courseID`) REFERENCES `courses` (`courseID`);
+
+--
+-- Các ràng buộc cho bảng `submissions`
+--
+ALTER TABLE `submissions`
+  ADD CONSTRAINT `submissions_ibfk_1` FOREIGN KEY (`assignmentID`) REFERENCES `assignments` (`assignmentID`),
+  ADD CONSTRAINT `submissions_ibfk_2` FOREIGN KEY (`studentID`) REFERENCES `users` (`userID`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

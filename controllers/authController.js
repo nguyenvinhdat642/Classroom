@@ -29,16 +29,42 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+const checkLoginMiddleware = (req, res, next) => {
+    if (req.session.user) {
+        res.locals.user = req.session.user;
+    } else {
+        res.locals.user = null;
+    }
+    next();
+};
+
+router.use(checkLoginMiddleware);
+
+router.get('/check-login', (req, res) => {
+    if (res.locals.user) {
+        res.json({ loggedIn: true, userEmail: res.locals.user.email });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
+
+router.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
 router.post('/login', async (req, res) => {
+    // Redirect to home if the user is already logged in
+    if (req.session.user) {
+        return res.redirect('/');
+    }
+
     const { email, password } = req.body;
 
     try {
-        // Tìm người dùng theo email
         const user = await User.findByEmail(email);
 
-        // Kiểm tra xem người dùng tồn tại và mật khẩu có đúng không
         if (user && await bcrypt.compare(password, user.password)) {
-            // Đăng nhập thành công, lưu thông tin người dùng vào session
             req.session.user = user;
             req.flash('success', 'Đăng nhập thành công!');
             res.redirect('/');
@@ -52,26 +78,26 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
 router.post('/register', async (req, res) => {
+    // Redirect to home if the user is already logged in
+    if (req.session.user) {
+        return res.redirect('/');
+    }
+
     console.log('Đã nhận yêu cầu POST đăng ký:', req.body);
     const { email, password, confirm_password } = req.body;
 
     try {
-        // Kiểm tra xem email đã tồn tại chưa
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             req.flash('error', 'Email đã được đăng ký!');
             return res.redirect('/register');
         }
 
-        // Tạo OTP và lưu vào session
         const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false });
         req.session.otp = otp;
-        // Lưu mật khẩu vào session
         req.session.registerPassword = password;
 
-        // Gửi OTP đến email của người dùng
         await sendOtpToEmail(email, otp);
 
         res.render('confirm-otp', { email });
@@ -86,16 +112,15 @@ router.post('/confirm-otp', (req, res) => {
     console.log('Đã nhận yêu cầu POST xác nhận OTP:', req.body);
     const password = req.session.registerPassword;
     console.log('Mật khẩu đã lưu trong session:', password)
-    // Kiểm tra xem OTP có khớp không
+
     if (otp === req.session.otp) {
-        
         if (!password) {
             console.error('Password is undefined');
             res.status(400).send('Bad Request: Missing password');
             return;
         } else {
             try {
-                User.create({ email, password});
+                User.create({ email, password });
                 req.flash('success', 'Đăng ký thành công!');
                 console.log('Đăng ký thành công!');
                 res.redirect('/login');
@@ -110,7 +135,6 @@ router.post('/confirm-otp', (req, res) => {
     }
 });
 
-// Phương thức gửi email
 async function sendOtpToEmail(email, otp) {
     const mailOptions = {
         from: 'your-email@gmail.com',

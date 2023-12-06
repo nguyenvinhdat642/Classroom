@@ -14,3 +14,4 @@ function validatePassword(event) {
     passwordError.textContent = "Passwords do not match. Please try again.";
   }
 }
+

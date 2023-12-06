@@ -70,6 +70,15 @@ html {
   sup {
     top: -.5em;
   }
+
+  #user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+#user-email {
+    margin-bottom: 5px; /* Adjust as needed */
+}
   
   sub {
     bottom: -.25em;

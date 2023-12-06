@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 
+
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -18,6 +19,7 @@ connection.connect((err) => {
 
 class User {
     static async findByEmail(email) {
+        console.log('Đã nhận yêu cầu tìm user theo email:', email);
         return new Promise((resolve, reject) => {
             connection.query('SELECT * FROM Users WHERE email = ?', [email], (err, results) => {
                 if (err) reject(err);
@@ -39,6 +41,25 @@ class User {
 
     static async comparePassword(inputPassword, hashedPassword) {
         return await bcrypt.compare(inputPassword, hashedPassword);
+    }
+
+    static async findById(userID) {
+        return new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM Users WHERE userID = ?', [userID], (err, results) => {
+                if (err) reject(err);
+                resolve(results[0]);
+            });
+        });
+    }
+
+    static async getUserRole(userID) {
+        try {
+            const user = await User.findById(userID);
+            return user ? user.role : null;
+        } catch (error) {
+            console.error('Error getting user role:', error);
+            throw error;
+        }
     }
 }
 

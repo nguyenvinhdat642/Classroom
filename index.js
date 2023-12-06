@@ -27,13 +27,12 @@ app.use(session({
 }));
 app.use(flash());
 
-// Import và sử dụng authController
 const authController = require('./controllers/authController');
 app.use(authController);
 
-app.get('/', (req, res) => {
-    res.render('index', { title: 'Classroom App' });
-});
+// app.get('/', (req, res) => {
+//     res.render('index', { title: 'Classroom App' });
+// });
 
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Login', message: req.flash('error') });
@@ -42,6 +41,17 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register', { title: 'Register' });
 });
+
+const lessonController = require('./controllers/lessonController');
+const indexController = require('./controllers/indexController');
+
+app.get('/', indexController.getAllCourses);
+
+app.get('/lessons', lessonController.getLesson);
+app.get('/lesson/:courseID', lessonController.getLessonDetails);
+app.get('/admin/create-lesson', lessonController.getCreateLessonForm);
+app.post('/admin/create-lesson', lessonController.createLesson);
+app.get('/lesson/enrollments/:courseID', lessonController.getEnrollments);
 
 const PORT = process.env.PORT || 8888;
 
