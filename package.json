@@ -4,7 +4,7 @@
   "description": "Project cuối kỳ môn \"Phát triển hệ thống thông tin doanh nghiệp\"",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",

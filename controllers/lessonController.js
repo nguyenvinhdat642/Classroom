@@ -1,5 +1,6 @@
 const Lesson = require('../models/Lesson');
 const UserController = require('../controllers/UserController');
+const Assignment = require('../models/assignment');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -43,8 +44,9 @@ const lessonController = {
                     res.render('teacher/lessons', { lessons: teacherLessons });
                     break;
                 case 'user':
-                    
-                    res.render('user/lessons');
+                    const studentID = req.session.user.userID;
+                    const studentLessons = await Lesson.getStudentLessons(studentID);
+                    res.render('user/lessons', { lessons: studentLessons });
                     break;
                 default:
                     res.render('lessons');
@@ -56,23 +58,23 @@ const lessonController = {
     },
 
     getLessonDetails: async (req, res) => {
-
         if (!req.session.user) {
             res.redirect('/login');
             return;
         }
-
+    
         const courseID = req.params.courseID;
         const studentID = req.session.user.userID;
-
-        
-
+    
         try {
             const user = req.session.user;
+    
             if (!user) {
                 return res.status(401).send('Unauthorized');
             }
+    
             let viewPath;
+    
             switch (user.role) {
                 case 'teacher':
                     viewPath = 'teacher/lessonDetail';
@@ -86,21 +88,39 @@ const lessonController = {
                 default:
                     return res.status(403).send('Permission denied');
             }
+    
             const lesson = await Lesson.getLessonById(courseID);
     
             if (!lesson) {
                 return res.status(404).send('Lesson not found');
             }
-
+    
             const isEnrolled = await Lesson.isStudentEnrolled(courseID, studentID);
-
-            if (isEnrolled) {
-                return await res.render('user/lessonDetailEnroll', { lesson });
-            } else {
-                res.render(viewPath, { lesson });
+    
+            let assignments;
+    
+            switch (user.role) {
+                case 'teacher':
+                    assignments = await Assignment.getAssignmentsByTeacher(user.userID, courseID);
+                    console.log(assignments);
+                    break;
+                case 'admin':
+                    assignments = await Assignment.getAssignmentsByCourse(courseID);
+                    console.log(assignments);
+                    break;
+                case 'user':
+                    assignments = await Assignment.getAssignmentsByCourse(courseID);
+                    break;
+                default:
+                    return res.status(403).send('Permission denied');
             }
-            
-
+    
+            if (isEnrolled) {
+                return await res.render('user/lessonDetailEnroll', { lesson, assignments });
+            } else {
+                res.render(viewPath, { lesson, assignments });
+            }
+    
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');

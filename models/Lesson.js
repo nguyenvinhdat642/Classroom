@@ -51,6 +51,15 @@ class Lesson {
         });
     }
 
+    static async getStudentLessons(studentID) {
+        return new Promise((resolve, reject) => {
+            connection.query('SELECT Courses.* FROM Courses JOIN enrollments ON Courses.courseID = enrollments.courseID WHERE enrollments.studentID = ?', [studentID], (err, results) => {
+                if (err) reject(err);
+                resolve(results);
+            });
+        });
+    }
+
     static async enrollStudent(courseID, studentID) {
         return new Promise((resolve, reject) => {
             connection.query(
@@ -85,6 +94,8 @@ class Lesson {
             );
         });
     }
+
+    
 }
 
 module.exports = Lesson;

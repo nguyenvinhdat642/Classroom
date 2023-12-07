@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th12 06, 2023 lúc 07:32 AM
+-- Thời gian đã tạo: Th12 07, 2023 lúc 05:09 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.0.28
 
@@ -61,9 +61,22 @@ CREATE TABLE `assignments` (
   `courseID` int(11) DEFAULT NULL,
   `assignmentName` varchar(255) NOT NULL,
   `deadline` date DEFAULT NULL,
-  `diem_so_toi_da` int(11) DEFAULT NULL,
-  `ngay_tao` date DEFAULT NULL
+  `ngay_tao` date DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `documentPath` varchar(255) DEFAULT NULL,
+  `userID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `assignments`
+--
+
+INSERT INTO `assignments` (`assignmentID`, `courseID`, `assignmentName`, `deadline`, `ngay_tao`, `content`, `documentPath`, `userID`) VALUES
+(1, 1, 'học làm  giàu part1', '2023-12-09', NULL, 'asdad', 'D:\\Classroom\\public\\files\\1\\luphi2158@gmail.com\\52000642_Lab01.docx', 3),
+(2, 3, 'chat box', '2023-12-09', NULL, 'asdafa', 'D:\\Classroom\\public\\files\\3\\luphi2158@gmail.com\\52000642_Lab01.docx', 3),
+(3, 3, 'chat box 2', '2023-12-10', NULL, 'asdafa', 'D:\\Classroom\\public\\files\\3\\luphi2158@gmail.com\\52000642_Lab01.docx', 3),
+(4, 3, 'chat bot 3', '2023-12-22', NULL, 'asdaf', 'D:\\Classroom\\public\\files\\3\\luphi2158@gmail.com\\tb-dkmh-hk1-2023-2024--cq_bskhoa27-(20230915_054146_485).doc', 3),
+(5, 1, 'học làm  giàu part 2', '2023-12-09', NULL, 'asdaf', 'D:\\Classroom\\public\\files\\1\\luphi2158@gmail.com\\52000642_Lab01.docx', 3);
 
 -- --------------------------------------------------------
 
@@ -77,8 +90,19 @@ CREATE TABLE `courses` (
   `teacherID` int(11) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `bai_tap` varchar(255) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL
+  `image` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `courses`
+--
+
+INSERT INTO `courses` (`courseID`, `courseName`, `teacherID`, `description`, `bai_tap`, `image`, `content`) VALUES
+(1, 'học làm  giàu', 3, 'asda', '', '1701850949138-381172105_1090258635691103_1132138287470103672_n.png', NULL),
+(3, 'Write A ChatGPT Chatbot With Node.js', 3, 'In this video we will build an AI chatbot from scratch using Node.js, the OpenAI library and the ChatGPT API.', '', '1701853156848-hq720.jpg', '<iframe width=\"935\" height=\"526\" src=\"https://www.youtube.com/embed/1YU83Lw58eo\" title=\"Write A ChatGPT Chatbot With Node.js\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>'),
+(4, 'Sự Thật Về Drama Kyenn (ft. @hoagenius )', 3, 'Tóm tắt hacker: \r\nHack tố cáo hack nhưng thằng tố cáo hack lại bị chửi ngu hơn cả thằng hack, nhưng thằng tố cáo hack lại chứng tỏ mình không hack và sĩ gái nên ko chịu nhận mình hack, check đi check lại thì thằng hack lại còn đc khen hơn cả thằng tố cáo hack.', '', '1701873025062-hq720 (1).jpg', '<iframe width=\"935\" height=\"526\" src=\"https://www.youtube.com/embed/RN4tYj9xsZk\" title=\"Sự Thật Về Drama Kyenn (ft. @hoagenius )\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>'),
+(5, 'Đi ăn TRỨNG, mới đổi VJ nên chúng tôi hơi lệch sóng | Cạn Ví', 3, '\r\n61.818 lượt xem  Đã công chiếu 14 giờ trước\r\nHỢP TÁC MỜI LIÊN HỆ:\r\nEmail: partners.98smedia@gmail.com\r\nZalo: 0349585580 (Thủy Trần)\r\nHết tiền nên chúng tôi đi ăn TRỨNG | Cạn Ví', '', '1701914699618-hq720.jpg', 'Đi ăn TRỨNG, mới đổi VJ nên chúng tôi hơi lệch sóng | Cạn Ví\r\n\r\n<iframe width=\"935\" height=\"526\" src=\"https://www.youtube.com/embed/MdRxh2RYbQo\" title=\"Đi ăn TRỨNG, mới đổi VJ nên chúng tôi hơi lệch sóng | Cạn Ví\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>');
 
 -- --------------------------------------------------------
 
@@ -116,6 +140,16 @@ CREATE TABLE `enrollments` (
   `courseID` int(11) DEFAULT NULL,
   `studentID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `enrollments`
+--
+
+INSERT INTO `enrollments` (`enrollmentID`, `courseID`, `studentID`) VALUES
+(3, 3, 4),
+(4, 1, 4),
+(5, 4, 4),
+(6, 5, 4);
 
 -- --------------------------------------------------------
 
@@ -204,7 +238,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`userID`, `password`, `email`, `role`) VALUES
 (1, 'password123', 'user1@example.com', 'user'),
 (2, '$2b$10$8UwpW22Vn5I1vsBBzn5sLu95D68IK0lKC5HSjlK6rJNurOhoDqHfO', 'nguyenvinhdat12a2@gmail.com', 'admin'),
-(3, '$2b$10$uQf1xnVLk92Zx3mKffJOdet1TXBdwHrbFh4c99Rt/s8ZzNfAFVVSS', 'luphi2158@gmail.com', 'user');
+(3, '$2b$10$uQf1xnVLk92Zx3mKffJOdet1TXBdwHrbFh4c99Rt/s8ZzNfAFVVSS', 'luphi2158@gmail.com', 'teacher'),
+(4, '$2b$10$hGqWyn23Zd2W4qGWXQf//ulf.sCFesK4B5OOH0W2IaKLQfhsCtkpS', 'vinhdatgg09@gmail.com', 'user');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -324,13 +359,13 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT cho bảng `assignments`
 --
 ALTER TABLE `assignments`
-  MODIFY `assignmentID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `assignmentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `courseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `discussions`
@@ -342,7 +377,7 @@ ALTER TABLE `discussions`
 -- AUTO_INCREMENT cho bảng `enrollments`
 --
 ALTER TABLE `enrollments`
-  MODIFY `enrollmentID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `enrollmentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `grades`
@@ -378,7 +413,7 @@ ALTER TABLE `submissions`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

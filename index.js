@@ -52,6 +52,12 @@ app.get('/lesson/:courseID', lessonController.getLessonDetails);
 app.get('/admin/create-lesson', lessonController.getCreateLessonForm);
 app.post('/admin/create-lesson', lessonController.createLesson);
 app.get('/lesson/enrollments/:courseID', lessonController.getEnrollments);
+// app.post('/lesson/enrollments/:courseID', lessonController.checkEnrollments);
+
+const assignmentController = require('./controllers/assignmentController');
+app.get('/assignments', assignmentController.getAssignment);
+app.get('/assignments/:courseID', assignmentController.getCourseID);
+app.post('/assignments/create-assignment', assignmentController.getCreateAssignment);
 
 const PORT = process.env.PORT || 8888;
 

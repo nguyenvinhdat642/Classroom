@@ -135,25 +135,50 @@
                     </div>
                     <div class="right-sidebar_wrapper">
                         <div class="sticky-sidebar">
-                            <div class="section-title">Assigments</div>
+                            <div class="section-title">Bài tập</div>
                             <div class="w-dyn-list">
+                                <div class="button-wrapper align-left"><a href="/assignments/<%= lesson.courseID %>"
+                                        class="button w-button">Tạo bài tập</a></div>
+                                <br>
                                 <div role="list" class="w-dyn-items">
                                     <div role="listitem" class="w-dyn-item">
-                                        <div class="card"><a href="/assignment/create-a-navbar-symbol"
-                                                class="assignment-link w-inline-block">
-                                                <div class="assignment-date left-align"><img
-                                                        src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec3219dfd4d5f011d90b219_grey_calendar.svg"
-                                                        alt="" class="icon" />
-                                                    <div class="date ssdebar-date">2/13/21</div>
-                                                </div>
-                                                <div class="card-title small">Create a Navbar Symbol</div>
-                                            </a></div>
+                                        <!-- Assuming this is your EJS template -->
+
+                                        <% for (let assignment of assignments) { %>
+                                            <div class="card">
+                                                <a href="/assignment/<%= assignment.assignmentID %>"
+                                                    class="assignment-link w-inline-block">
+                                                    <div class="assignment-date left-align">
+                                                        <img src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec3219dfd4d5f011d90b219_grey_calendar.svg"
+                                                            alt="" class="icon" />
+                                                        <div class="date ssdebar-date">
+                                                            <%= formatDateTime(assignment.deadline) %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-title small">
+                                                        <%= assignment.assignmentName %>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <% } %>
+
+                                                <% function formatDateTime(dateTime) { %>
+                                                    <!-- You can customize the date and time format based on your requirements -->
+                                                    <% const utcDateTime=new Date(dateTime); %>
+                                                        <% utcDateTime.setHours(utcDateTime.getHours() + 7); %>
+                                                            <!-- Adjust for UTC+7 -->
+                                                            <% const
+                                                                formattedDateTime=utcDateTime.toLocaleString('en-US');
+                                                                %>
+                                                                <%= formattedDateTime %>
+                                                                    <% } %>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             <div class="footer"><a href="https://www.webflow.com" target="_blank"
@@ -173,6 +198,14 @@
     <script src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/js/webflow.8bea4887a.js"
         type="text/javascript"></script>
     <script>
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
+            return formattedDate;
+        }
+    </script>
+    <script>
+
         var textContent = document.getElementById("myDiv").innerText;
         document.getElementById("myDiv").innerHTML = textContent;
 
