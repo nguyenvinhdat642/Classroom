@@ -20,6 +20,98 @@ class Assignment {
     });
   }
 
+  static async getSubmissionAssignmentById(assignmentID, studentID) {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            'SELECT * FROM submissions WHERE assignmentID = ? AND studentID = ?',
+            [assignmentID, studentID],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results[0]);
+                }
+            }
+        );
+    });
+  }
+
+  static async getAllSubmissionAssignmentById(assignmentID) {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            'SELECT * FROM submissions WHERE assignmentID = ?',
+            [assignmentID],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+  }
+
+  static async getSubmissionStudents(studentIDs) {
+    const promises = studentIDs.map(studentID => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM users WHERE userID = ?',
+                [studentID],
+                (err, results) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results[0]);
+                    }
+                }
+            );
+        });
+    });
+
+    try {
+        const submissionStudents = await Promise.all(promises);
+        return submissionStudents;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+  static async submissionsByStudent(submissionData) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE submissions SET noi_dung = ?, ngay_nop = ? WHERE submissionID = ?',
+        [submissionData.noi_dung, submissionData.ngay_nop, submissionData.submissionID],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  }
+
+  static async getSubmissionByID(assignmentID) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT * FROM submissions WHERE assignmentID = ?',
+        [assignmentID],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
+
+
+
+  
+
+
   // static async createAssignment(assignmentData) {
   //   return new Promise((resolve, reject) => {
   //     connection.query(

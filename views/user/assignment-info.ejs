@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Add a page load animation</title>
+    <title><%= assignments.assignmentName %></title>
     <meta content="Use Interactions to create an animation on the hero section." name="description" />
     <meta content="Add a page load animation" property="og:title" />
     <meta content="Use Interactions to create an animation on the hero section." property="og:description" />
@@ -15,7 +15,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Webflow" name="generator" />
     <link
-        href="css/styles.css"
+        href="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/css/educare-template.webflow.88d89e5a0.css"
         rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
@@ -60,7 +60,15 @@
                                 src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec0768dab934f65d1afd7c8_Message.svg"
                                 width="22" alt="" class="icon" />
                             <div>Ask a question</div>
-                        </a></nav>
+                        </a>
+                        <div id="login-status" class="navlink w-inline-block">
+                            <div id="user-email"></div>
+                        </div>
+                        <div id="login-status" class="navlink w-inline-block">
+                            <div id="login-logout-btn" onclick="toggleLogin()">
+                                <div id="login-logout-text">Login</div>
+                            </div>
+                        </div></nav>
                     <div class="menu-button w-nav-button">
                         <div class="menu-icon w-icon-nav-menu"></div>
                     </div>
@@ -82,95 +90,84 @@
                 </div>
             </div>
             <div class="section">
-                <h1>Add a page load animation</h1>
-                <div class="due-date">
-                    <div>Due date:</div>
-                    <p class="date assignment">7/1/19</p>
-                </div>
+            <h1>
+                <%= assignments.assignmentName %>
+            </h1>
+            <div class="due-date">
+                <div>Due date:</div>
+                <p class="date assignment"><%= formatDateTime(assignments.deadline) %></p>
+                <% function formatDateTime(dateTime) { %>
+                    <% const utcDateTime=new Date(dateTime); %>
+                        <% utcDateTime.setHours(utcDateTime.getHours()); %>
+                            <% const
+                                formattedDateTime=utcDateTime.toLocaleString('vi-VN');
+                                %>
+                                <%= formattedDateTime %>
+                                    <% } %>
             </div>
+            </div>
+            
             <div class="content-grid">
                 <div class="content">
                     <div>
                         <div class="section-title">Assignment</div>
                         <div class="card extra-padding w-richtext">
-                            <h2>Aliquam ut ipsa vitae.</h2>
-                            <p>Nemo assumenda voluptatem quis placeat quo est facilis dolores temporibus. Adipisci
-                                veritatis in voluptas quo. Dolore veritatis voluptas vero.</p>
-                            <h3>Quidem fugit non numquam autem.</h3>
-                            <blockquote>Ipsa magni ut voluptatum aut. Sit aperiam voluptatem debitis ut quia et labore.
-                                Commodi ipsa et sint dolore vitae saepe.</blockquote>
-                            <p>Pariatur ut dolor quaerat optio autem. Dolor aut reprehenderit. Repellat omnis fugit
-                                accusamus ut modi. Voluptates fuga corporis et numquam qui modi atque voluptas. Rem
-                                dicta laboriosam cupiditate beatae et esse doloribus.</p>
-                            <p>Qui nostrum facilis est fugiat id deserunt. Et quo nobis inventore alias inventore iure
-                                occaecati soluta. Aperiam et consequuntur est possimus neque eum. Cupiditate saepe ipsam
-                                dolore assumenda temporibus laboriosam. Officia in at odit harum dolore et non incidunt
-                                voluptates.</p>
-                            <h2>Consequatur qui mollitia veritatis rerum quia.</h2>
-                            <p>Tenetur et est hic sed vel. Quia nemo asperiores nemo fugit rerum. Et sint explicabo ab
-                                nemo aspernatur maxime qui aliquid ex. Porro dolorum dolorem autem vero ipsam natus.</p>
-                            <h3>Molestiae sit dolor dolore.</h3>
-                            <blockquote>Quo et non corrupti natus aliquam. Ut et cumque magni. Voluptatem accusamus
-                                libero deserunt in. Quam nihil nulla doloribus eum et sequi cupiditate enim consequatur.
-                            </blockquote>
-                            <p>Ratione impedit aut nihil non. Quibusdam ut hic ut aut optio ducimus occaecati vel.
-                                Doloribus enim neque. Est exercitationem quia nulla.</p>
-                            <p>Ducimus asperiores in non omnis. Accusamus aut facilis fugiat quis quia autem et unde
-                                vel. Tempora accusamus eum ea ab reiciendis quasi. Tenetur molestiae ut atque corporis
-                                maiores porro ea. Inventore perferendis tenetur aliquam sed. Quos placeat dolorem et
-                                pariatur debitis.</p>
-                            <h2>Omnis autem quas reprehenderit.</h2>
-                            <p>A asperiores cum distinctio tenetur cum. Voluptates dolorem ut officia reiciendis
-                                molestias excepturi omnis. Voluptas temporibus ut. Est quae sunt enim repudiandae
-                                tempore autem rerum. Esse explicabo cumque est voluptatem voluptas vel fuga aut ut. Qui
-                                quibusdam dolor nihil debitis est voluptatem.</p>
-                            <h3>Possimus aspernatur nulla repellendus et blanditiis.</h3>
-                            <blockquote>Fugiat ut assumenda aut. Voluptatum itaque quia dolores consequatur dolores
-                                culpa. Id rerum unde quidem id vero corporis.</blockquote>
-                            <p>Dolorem aspernatur libero praesentium dolor molestias eligendi. Temporibus rerum beatae.
-                                Fugiat veritatis corrupti vel quam sapiente nobis ut beatae porro.</p>
-                            <p>Tempore ratione quos deserunt aut. Libero sunt non quaerat ut. Rerum et quod facilis
-                                reprehenderit deleniti molestiae fuga cum laborum. Molestias magnam aut sit dolorem
-                                molestias commodi sit quibusdam. In nesciu</p>
+                            <h2><%= assignments.content %></h2>
                         </div>
                     </div>
                 </div>
                 <div class="right-sidebar_wrapper">
                     <div class="sticky-sidebar">
-                        <div class="section-title">Files</div>
-                        <div class="card right-sidebar"><a href="#" class="assets-link w-inline-block"><img
+                        <% if (submissions.ngay_nop !== null) { %>
+                            <div class="section-title">Bạn đã nộp bài tập</div>
+                            <% } else { %>
+                            <div class="section-title">Bài tập</div>
+                            <% } %> 
+                        <div class="card right-sidebar">
+                            <div class="card right-sidebar">
+                    <% const pathArray=assignments.documentPath.replace(/\\/g, '/' ).split('/'); %>
+                        <a href="/download?pathname=<%= encodeURIComponent(pathArray.slice(0, -1).join('/')) %>&filename=<%= encodeURIComponent(pathArray.slice(-1)[0]) %>"
+                            class="assets-link w-inline-block" download>
+                            <img
                                     src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec436df818db6973c9cbe96_Download.svg"
                                     alt="" class="icon" />
-                                <div>Download assets</div>
-                            </a></div>
-                        <div class="section-title top-margin">Related lessonS</div>
-                        <div class="w-dyn-list">
-                            <div role="list" class="w-dyn-items">
-                                <div role="listitem" class="w-dyn-item">
-                                    <div class="card right-sidebar"><a href="/lesson/intro-to-interactions"
-                                            class="sidebar-link w-inline-block">
-                                            <h1 class="card-title small">Intro to Interactions</h1>
-                                        </a><a href="/category/interactions" class="category-link w-inline-block">
-                                            <div class="category">Interactions</div>
-                                        </a><a href="/author/jerod-macejkovic"
-                                            class="author-info lower-margin w-inline-block"><img alt=""
-                                                src="https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash.jpg"
-                                                sizes="30.000001907348633px"
-                                                srcset="https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash-p-500.jpeg 500w, https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash-p-800.jpeg 800w, https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash.jpg 1000w"
-                                                class="avatar" />
-                                            <div>by</div>
-                                            <div class="author-name">Jerod Macejkovic</div>
-                                        </a></div>
-                                </div>
+                            <div>
+                                <%= getFileName(assignments.documentPath) %>
                             </div>
+
+                            </div>
+                            <% function getFileName(filePath) { %>
+                                <% const pathArray = filePath.split("\\"); %>
+                                <% const fileName = pathArray[pathArray.length - 1]; %>
+                                <% return fileName; %>
+                            <% } %>
+                            
                         </div>
+                        <div>
+                            <form action="/assignments/detail/submit/<%= submissions.submissionID %>" method="post" enctype="multipart/form-data">
+                                <input type="file" name="submit-doc" id="submit-doc" accept=".docx, .pdf" required>
+                            
+                                <br style="margin-top: 10px;">
+                                <input type="hidden" name="submissionID" id="submissionID" value="<%= submissions.submissionID %>" required>
+                                <input type="hidden" name="courseID" id="courseID" value="<%= assignments.courseID %>" required>   
+                                <input type="hidden" name="ngay_nop" id="ngay_nop" value="<%= submissions.ngay_nop || '' %>" required>
+                                <!-- ^^^ Thêm điều kiện để ngay_nop không phải null -->
+                            
+                                <div><br></div>
+                                <% if (submissions.ngay_nop !== null) { %>
+                                    <button type="submit" class="button w-button">Chỉnh sửa bài tập</button>
+                                <% } else { %>
+                                    <button type="submit" class="button w-button">Nộp bài tập</button>
+                                <% } %> 
+                            </form>
+                            
+                        
+                        </div>
+                        
                     </div>
                 </div>
             </div>
-            <div class="footer"><a href="https://www.webflow.com" target="_blank"
-                    class="footer-link w-inline-block"><img
-                        src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec327926474bf2c94b98c13_webflow-mark-vector-blue.png"
-                        width="22" alt="" class="webflow" />
+            <div class="footer">
                     <div>Powered by Webflow</div>
                 </a><a id="w-node-fc126ed8-ceec-18e5-095a-fbeb36a49880-36a4987b" href="/template-info/licensing"
                     class="footer-link right w-inline-block">
@@ -183,6 +180,74 @@
         crossorigin="anonymous"></script>
     <script src="js/script.js"
         type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/date-fns@2.28.0"></script>
+    <script>
+        const deadline = "<%= assignments.deadline %>";
+        const formattedDueDate = format(new Date(deadline), "EEEE, dd/MM/yyyy", { locale: vi });
+        document.getElementById('dueDate').innerText = formattedDueDate;
+    </script>
+    <script>
+        document.getElementById('ngay_nop').value = new Date().toISOString();
+    </script>
+
+    <script>
+
+        function getFileName(filePath) {
+            const pathArray = filePath.split("\\");
+            return pathArray[pathArray.length - 1];
+        }
+
+        function toggleLogin() {
+            $.ajax({
+                url: '/check-login',
+                method: 'GET',
+                success: function (data) {
+                    if (data.loggedIn) {
+                        handleLogout();
+                    } else {
+                        window.location.href = '/login';
+                    }
+                },
+                error: function () {
+                    console.error('Error checking login status');
+                }
+            });
+        }
+
+        function handleLogout() {
+            $.ajax({
+                url: '/logout',
+                method: 'POST',
+                success: function (data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                },
+                error: function () {
+                    console.error('Error logging out');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '/check-login',
+                method: 'GET',
+                success: function (data) {
+                    if (data.loggedIn) {
+                        $('#user-email').html(data.userEmail);
+                        $('#login-logout-text').html('Logout');
+                    } else {
+                        $('#user-email').html('');
+                        $('#login-logout-text').html('Login');
+                    }
+                },
+                error: function () {
+                    console.error('Error checking login status');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

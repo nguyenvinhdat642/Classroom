@@ -1,4 +1,5 @@
 const Assignment = require('../models/assignment');
+const mkdirp = require('mkdirp');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -94,6 +95,9 @@ const assignmentController = {
     },
 
     getCreateAssignment: async (req, res) => {
+        if (!req.session || !req.session.user) {
+            return res.redirect('/login');
+        }
         try {
             upload.single('lesson-doc')(req, res, async (err) => {
                 if (err) {
@@ -131,6 +135,54 @@ const assignmentController = {
             res.status(500).json({ error: 'Internal Server Error', details: error.message });
         }
     },
+
+    getAssignmentID: async (req, res) => {
+        if (!req.session || !req.session.user) {
+            return res.redirect('/login');
+        }
+        try {
+            const assignmentID = req.params.assignmentID;
+            const userRole = req.session.user.role;
+            const userID = req.session.user.userID;
+
+
+            if (userRole === 'admin') {
+                const assignments = await Assignment.getAssignmentById(assignmentID);
+                console.log(assignments);
+                res.render('admin/assignment-info', { assignments: assignments });
+
+            } else if (userRole === 'teacher') {
+                const assignments = await Assignment.getAssignmentById(assignmentID);
+                const submissions = await Assignment.getAllSubmissionAssignmentById(assignmentID);
+                const studentID = submissions.map(submission => submission.studentID);
+                const submissionStudent = await Assignment.getSubmissionStudents(studentID);
+
+                console.log(submissions.studentID);
+                console.log(submissions);
+                console.log(assignments);
+                console.log(submissionStudent);
+
+                res.render('teacher/assignment-info', { assignments: assignments, submissions: submissions, submissionStudent: submissionStudent });
+
+            } else if (userRole === 'user') {
+                const submissions = await Assignment.getSubmissionAssignmentById(assignmentID, userID);
+                const assignments = await Assignment.getAssignmentById(assignmentID);
+                console.log(assignmentID, userID);
+                console.log(assignments);
+                res.render('user/assignment-info', { assignments: assignments, submissions: submissions });
+
+
+            } else {
+                res.status(403).send('Forbidden');
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        }
+    },
+
+    createSubmission: async (req, res) => {
+    }
 };
 
 module.exports = assignmentController;

@@ -208,6 +208,8 @@ const lessonController = {
         try {
             const courseID = req.params.courseID;
             const studentID = req.session.user.userID;
+
+            console.log("studentID is: "+ studentID);
     
             if (!req.session.user || !studentID) {
                 res.redirect('/login');
@@ -219,10 +221,10 @@ const lessonController = {
             for (const assignment of assignments) {
                 const enrolledStudents = await Lesson.getEnrolledStudents(courseID);
                 const submissionPromises = enrolledStudents.map(async (student) => {
-                    const hasSubmission = await Lesson.hasSubmission(student.studentID, assignment.assignmentID);
+                    const hasSubmission = await Lesson.hasSubmission(studentID, assignment.assignmentID);
 
                     if (!hasSubmission) {
-                        await Lesson.createSubmission(assignment.assignmentID, student.studentID);
+                        await Lesson.createSubmission(assignment.assignmentID, studentID);
                     }
                 });
 

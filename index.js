@@ -6,6 +6,7 @@ const path = require('path');
 const session = require('express-session');
 const flash = require('express-flash');
 require('dotenv').config();
+const router = express.Router();
 
 const app = express();
 app.use(cors({
@@ -16,6 +17,17 @@ app.use(cors({
 // app.use((req, res, next) => {
 //     res.status(404).render(path.join(__dirname, 'views', 'error-404.ejs'));
 //   });
+
+app.get('/download', (req, res) => {
+    const pathname = decodeURIComponent(req.query.pathname);
+    const filename = decodeURIComponent(req.query.filename);
+    const filepath = path.join(pathname, filename);
+
+    console.log(pathname);
+    console.log(filename);
+
+    res.download(filepath, filename);
+});
 
 
 
@@ -64,6 +76,11 @@ const assignmentController = require('./controllers/assignmentController');
 app.get('/assignments', assignmentController.getAssignment);
 app.get('/assignments/:courseID', assignmentController.getCourseID);
 app.post('/assignments/create-assignment', assignmentController.getCreateAssignment);
+app.get('/assignment/detail/:assignmentID', assignmentController.getAssignmentID);
+
+const submissionController = require("./controllers/submissionController")
+app.post('/assignments/detail/submit/:assignmentID', submissionController.createSubmission);
+
 
 
 // app.use(function(req, res) {

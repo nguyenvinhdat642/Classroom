@@ -143,7 +143,7 @@
 
                                         <% for (let assignment of assignments) { %>
                                             <div class="card">
-                                                <a href="/assignment/<%= assignment.assignmentID %>"
+                                                <a href="/assignment/detail/<%= assignment.assignmentID %>"
                                                     class="assignment-link w-inline-block">
                                                     <div class="assignment-date left-align">
                                                         <img src="https://assets-global.website-files.com/5ec03c2c67cf4824e3d00674/5ec3219dfd4d5f011d90b219_grey_calendar.svg"
@@ -162,10 +162,9 @@
                                                 <% function formatDateTime(dateTime) { %>
                                                     <!-- You can customize the date and time format based on your requirements -->
                                                     <% const utcDateTime=new Date(dateTime); %>
-                                                        <% utcDateTime.setHours(utcDateTime.getHours() + 7); %>
-                                                            <!-- Adjust for UTC+7 -->
+                                                        <% utcDateTime.setHours(utcDateTime.getHours()); %>
                                                             <% const
-                                                                formattedDateTime=utcDateTime.toLocaleString('en-US');
+                                                                formattedDateTime=utcDateTime.toLocaleString('vi-VN');
                                                                 %>
                                                                 <%= formattedDateTime %>
                                                                     <% } %>
