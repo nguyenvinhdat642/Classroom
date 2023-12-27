@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const connection = require('./db');
+const Assignment = require('./assignment');
 
 class Lesson {
     static async getAllLessons() {
@@ -95,6 +96,45 @@ class Lesson {
         });
     }
 
+    static async getEnrolledStudents(courseID) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM enrollments WHERE courseID = ?',
+                [courseID],
+                (err, results) => {
+                    if (err) reject(err);
+                    resolve(results);
+                }
+            );
+        });
+    }
+    
+    static async createSubmission(assignmentID, studentID) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'INSERT INTO submissions (assignmentID, studentID) VALUES (?, ?)',
+                [assignmentID, studentID],
+                (err, results) => {
+                    if (err) reject(err);
+                    resolve(results);
+                }
+            );
+        });
+    } 
+
+    static async hasSubmission(studentID, assignmentID) {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM submissions WHERE studentID = ? AND assignmentID = ?',
+                [studentID, assignmentID],
+                (err, results) => {
+                    if (err) reject(err);
+                    resolve(results.length > 0);
+                }
+            );
+        });
+    }
+     
     
 }
 

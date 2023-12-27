@@ -1,4 +1,5 @@
 const connection = require('./db');
+const Lesson = require('./Lesson');
 
 class Assignment {
   static async getAllAssignments() {
@@ -19,23 +20,112 @@ class Assignment {
     });
   }
 
+  // static async createAssignment(assignmentData) {
+  //   return new Promise((resolve, reject) => {
+  //     connection.query(
+  //       'INSERT INTO assignments (courseID, assignmentName, deadline, ngay_tao, content, documentPath, userID) VALUES (?, ?, ?, ?, ?, ?, ?)',
+  //       [assignmentData.courseID, assignmentData.assignmentName, assignmentData.deadline, assignmentData.ngay_tao, assignmentData.content, assignmentData.documentPath, assignmentData.userID],
+  //       (err, results) => {
+  //         if (err) reject(err);
+  //         const assignmentID = results.insertId;
+  //         resolve({ assignmentID, ...assignmentData });
+  //       }
+  //     );
+  //   });
+  // }
+
+//   static async createAssignment(assignmentData) {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             const result = connection.query(
+//                 'INSERT INTO assignments (courseID, assignmentName, deadline, ngay_tao, content, documentPath, userID) VALUES (?, ?, ?, ?, ?, ?, ?)',
+//                 [assignmentData.courseID, assignmentData.assignmentName, assignmentData.deadline, assignmentData.ngay_tao, assignmentData.content, assignmentData.documentPath, assignmentData.userID]
+//             );
+
+//             console.log(result);
+
+              // const assignmentID = result.insertId;
+//             console.log("assignmentID is" + assignmentID);
+
+            // const enrolledStudents = await new Promise((resolve, reject) => {
+            //     connection.query(
+            //         'SELECT * FROM enrollments WHERE courseID = ?',
+            //         [assignmentData.courseID],
+            //         (err, results) => {
+            //             if (err) reject(err);
+            //             resolve(results);
+            //         }
+            //     );
+            // });
+
+//             console.log(enrolledStudents);
+
+//             for (const student of enrolledStudents) {
+//                 await Lesson.createSubmission(assignmentID, student.studentID);
+//             }
+
+//             resolve({ assignmentID, ...assignmentData });
+//         } catch (err) {
+//             reject(err);
+//         }
+//     });
+// }
+
   static async createAssignment(assignmentData) {
     return new Promise((resolve, reject) => {
       connection.query(
         'INSERT INTO assignments (courseID, assignmentName, deadline, ngay_tao, content, documentPath, userID) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [assignmentData.courseID, assignmentData.assignmentName, assignmentData.deadline, assignmentData.ngay_tao, assignmentData.content, assignmentData.documentPath, assignmentData.userID],
-        (err, results) => {
-          if (err) reject(err);
-          const assignmentID = results.insertId;
-          resolve({ assignmentID, ...assignmentData });
+        async (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            const assignmentID = result.insertId;
+            console.log(assignmentID);
+
+            // Lấy danh sách sinh viên đã tham gia lớp học
+            const enrolledStudents = await new Promise((resolve, reject) => {
+              connection.query(
+                'SELECT * FROM enrollments WHERE courseID = ?',
+                [assignmentData.courseID],
+                (err, results) => {
+                  if (err) reject(err);
+                  resolve(results);
+                }
+              );
+            });
+
+            console.log(enrolledStudents);
+
+            const submissionPromises = enrolledStudents.map((student) => {
+              return new Promise((resolve, reject) => {
+                connection.query(
+                  'INSERT INTO submissions (assignmentID, studentID) VALUES (?, ?)',
+                  [assignmentID, student.studentID],
+                  (err, results) => {
+                    if (err) reject(err);
+                    resolve(results);
+                  }
+                );
+              });
+            });
+
+
+            await Promise.all(submissionPromises);
+
+            resolve({ assignmentID, ...assignmentData });
+          }
         }
       );
     });
   }
 
-  static async getUserAssignments(courseIDs) {
+
+
+
+  static async getUserAssignments(courseIDs, userID) {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM assignments WHERE courseID IN (?)', [courseIDs], (err, results) => {
+      connection.query('SELECT * FROM assignments WHERE courseID IN (?)', [courseIDs, userID], (err, results) => {
         if (err) reject(err);
         resolve(results);
       });
@@ -44,57 +134,76 @@ class Assignment {
 
   static async getAssignmentsByCourse(courseID) {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM assignments WHERE courseID = ?', [courseID], (err, results) => {
-            if (err) reject(err);
-            resolve(results);
-        });
+      connection.query('SELECT * FROM assignments WHERE courseID = ?', [courseID], (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
     });
-}
+  }
 
-static async isTeacherOfCourse(teacherID, courseID) {
+  static async isTeacherOfCourse(teacherID, courseID) {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM courses WHERE teacherID = ? AND courseID = ?', [teacherID, courseID], (err, results) => {
-            if (err) reject(err);
-            resolve(results.length > 0);
-        });
+      connection.query('SELECT * FROM courses WHERE teacherID = ? AND courseID = ?', [teacherID, courseID], (err, results) => {
+        if (err) reject(err);
+        resolve(results.length > 0);
+      });
     });
-}
+  }
 
-static async getAssignmentsByTeacher(teacherID, courseID) {
+  static async getAssignmentsByTeacher(teacherID, courseID) {
     return new Promise((resolve, reject) => {
-        connection.query(
-            'SELECT * FROM assignments WHERE userID = ? AND courseID = ?',
-            [teacherID, courseID],
-            (err, results) => {
-                if (err) reject(err);
-                resolve(results);
-            }
-        );
+      connection.query(
+        'SELECT * FROM assignments WHERE userID = ? AND courseID = ?',
+        [teacherID, courseID],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
     });
-}
+  }
 
 
-static async getStudentAssignments(courseID, studentID) {
+  static async getStudentAssignments(courseID, studentID) {
     return new Promise((resolve, reject) => {
-        connection.query(
-            'SELECT * FROM assignments WHERE courseID = ? AND userID = ?',
-            [courseID, studentID],
-            (err, results) => {
-                if (err) reject(err);
-                resolve(results);
-            }
-        );
+      connection.query(
+        'SELECT * FROM assignments WHERE courseID = ? AND userID = ?',
+        [courseID, studentID],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
     });
-}
+  }
 
-static async getAllAssignments() {
+  static async getAllAssignments() {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM assignments', (err, results) => {
-            if (err) reject(err);
-            resolve(results);
-        });
+      connection.query('SELECT * FROM assignments', (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
     });
-}
+  }
+  // static async getTeacherAssignments(courseID, teacherID) {
+  //   return new Promise((resolve, reject) => {
+  //     connection.query('SELECT * FROM ')
+  //   });
+  // }
+
+  static async getAssignmentsByCourseID(courseID) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT * FROM assignments WHERE courseID = ?',
+        [courseID],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
+  }
+
 }
 
 module.exports = Assignment;

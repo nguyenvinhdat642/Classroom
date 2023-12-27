@@ -13,6 +13,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
+// app.use((req, res, next) => {
+//     res.status(404).render(path.join(__dirname, 'views', 'error-404.ejs'));
+//   });
+
+
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(__dirname + '/public'));
@@ -58,6 +64,11 @@ const assignmentController = require('./controllers/assignmentController');
 app.get('/assignments', assignmentController.getAssignment);
 app.get('/assignments/:courseID', assignmentController.getCourseID);
 app.post('/assignments/create-assignment', assignmentController.getCreateAssignment);
+
+
+// app.use(function(req, res) {
+//     res.status(404).render(path.join(__dirname, 'views', 'error-404.ejs'));
+// });
 
 const PORT = process.env.PORT || 8888;
 

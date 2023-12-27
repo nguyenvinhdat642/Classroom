@@ -53,7 +53,7 @@ const assignmentController = {
 
             } else if (userRole === 'admin') {
                 const assignments = await Assignment.getAllAssignments();
-                res.render('    ', { assignments });
+                res.render('assignments', { assignments });
 
             }
         } catch (error) {
@@ -81,7 +81,8 @@ const assignmentController = {
 
             } else if (userRole === 'user') {
                 const assignments = await Assignment.getUserAssignments(courseID, req.session.user.userID);
-                res.render('user/createAssignmentForm', { assignments, courseID });
+                console.log(assignments);
+                res.render('user/assignment-info', { assignments, courseID });
 
             } else {
                 res.status(403).send('Forbidden');

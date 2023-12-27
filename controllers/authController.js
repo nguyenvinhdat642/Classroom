@@ -7,9 +7,9 @@ const { google } = require('googleapis');
 const OAuth2Client = google.auth.OAuth2;
 const router = express.Router();
 
-const GOOGLE_MAILER_CLIENT_ID = '3962031896-f02rnenicut7roggoivpil6efgtkih0d.apps.googleusercontent.com';
-const GOOGLE_MAILER_CLIENT_SECRET = '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';
-const GOOGLE_MAILER_REFRESH_TOKEN = '1//04i2Iu5VyZAmYCgYIARAAGAQSNwF-L9IrWEbZYP8qnzUtr7OB3i17GvEjD6cKoqX3iZJ7qz2fw8ob3HXcAOErDZsS5WAshM1Z-Fw';
+const GOOGLE_MAILER_CLIENT_ID = '709778577188-arns12aavbpbnqfha9f4aa6087fhbui5.apps.googleusercontent.com';
+const GOOGLE_MAILER_CLIENT_SECRET = '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';
+const GOOGLE_MAILER_REFRESH_TOKEN = '1//049vmG_MK79goCgYIARAAGAQSNwF-L9Ir4oo-CkdvkmVVozjsFYLXMlZg8PY09PKEGmbS1wrijtUjRT15n77FSf28w9ISROlzmxA';
 const ADMIN_EMAIL_ADDRESS = 'vinhdatgg09@gmail.com';
 
 const myOAuth2Client = new OAuth2Client(GOOGLE_MAILER_CLIENT_ID, GOOGLE_MAILER_CLIENT_SECRET);

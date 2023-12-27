@@ -182,6 +182,28 @@ const lessonController = {
         },
     ],
 
+    // getEnrollments: async (req, res) => {
+    //     try {
+    //         const courseID = req.params.courseID;
+    //         const studentID = req.session.user.userID;
+    
+    //         if (!req.session.user || !studentID) {
+    //             res.redirect('/login');
+    //             return;
+    //         }
+    
+    //         const isEnrolled = await Lesson.isStudentEnrolled(courseID, studentID);
+
+    //         await Lesson.enrollStudent(courseID, studentID);
+    
+    //         res.redirect('/lesson/' + courseID);
+    
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).send('Internal Server Error');
+    //     }
+    // },
+
     getEnrollments: async (req, res) => {
         try {
             const courseID = req.params.courseID;
@@ -192,12 +214,24 @@ const lessonController = {
                 return;
             }
     
-            const isEnrolled = await Lesson.isStudentEnrolled(courseID, studentID);
+            const assignments = await Assignment.getAssignmentsByCourseID(courseID);
 
+            for (const assignment of assignments) {
+                const enrolledStudents = await Lesson.getEnrolledStudents(courseID);
+                const submissionPromises = enrolledStudents.map(async (student) => {
+                    const hasSubmission = await Lesson.hasSubmission(student.studentID, assignment.assignmentID);
+
+                    if (!hasSubmission) {
+                        await Lesson.createSubmission(assignment.assignmentID, student.studentID);
+                    }
+                });
+
+                await Promise.all(submissionPromises);
+            }
+    
             await Lesson.enrollStudent(courseID, studentID);
     
             res.redirect('/lesson/' + courseID);
-    
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
