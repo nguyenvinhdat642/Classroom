@@ -2,6 +2,7 @@ const Lesson = require('../models/Lesson');
 const UserController = require('../controllers/UserController');
 const Assignment = require('../models/assignment');
 const multer = require('multer');
+const Mail = require('../models/Mail');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -208,6 +209,7 @@ const lessonController = {
         try {
             const courseID = req.params.courseID;
             const studentID = req.session.user.userID;
+            const email = req.session.user.email;
 
             console.log("studentID is: "+ studentID);
     
@@ -230,7 +232,9 @@ const lessonController = {
 
                 await Promise.all(submissionPromises);
             }
-    
+
+            const getLesson = await Lesson.getLessonById(courseID);
+            // await Mail.sendEmail(email, getLesson.courseName);
             await Lesson.enrollStudent(courseID, studentID);
     
             res.redirect('/lesson/' + courseID);

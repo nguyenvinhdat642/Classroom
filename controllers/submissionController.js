@@ -71,6 +71,43 @@ const submissionController = {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error', details: error.message });
         }
+    },
+
+    getSubmission: async (req, res) => {
+        try {
+            const submissionID = req.params.submissionID;
+
+            const submissions = await Assignment.getSubmission(submissionID);
+            const submissionStudent = await Assignment.getStudentbySubmission(submissions.studentID);
+            const assignments = await Assignment.getAssignmentById(submissions.assignmentID);
+            console.log("Kiểm tra: getSubmission")
+            console.log(submissions);
+            console.log(submissionStudent);
+            console.log(assignments);
+            res.render('teacher/assignment-info-student.ejs', { submissions, submissionStudent,  assignments});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    },
+
+    getMark: async (req, res) => {
+        try {
+            const submissionID = req.query.submissionID;
+            const diem_so = req.query.diem_so;
+            console.log(diem_so);
+            const result = await Assignment.updateMark(submissionID, diem_so);
+            console.log("Kiểm tra: getMark")
+            console.log(result);
+            if (result) {
+                res.redirect('/submission/student/' + encodeURIComponent(submissionID));
+            } else {
+                res.status(500).json({ error: 'Lỗi khi cập nhật điểm' });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        }
     }
 }
 

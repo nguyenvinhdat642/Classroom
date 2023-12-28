@@ -63,7 +63,6 @@
                         </a>
                         <div id="login-status" class="navlink w-inline-block">
                             <div id="user-email"></div>
-                            <div id="user-role"></div>
                         </div>
                         <div id="login-status" class="navlink w-inline-block">
                             <div id="login-logout-btn" onclick="toggleLogin()">
@@ -95,8 +94,8 @@
                 <%= assignments.assignmentName %>
             </h1>
             <div class="due-date">
-                <div>Due date:</div>
-                <p class="date assignment"><%= formatDateTime(assignments.deadline) %></p>
+                <div>Đã nộp:</div>
+                <p class="date assignment"><%= formatDateTime(submissions.ngay_nop) %></p>
                 <% function formatDateTime(dateTime) { %>
                     <% const utcDateTime=new Date(dateTime); %>
                         <% utcDateTime.setHours(utcDateTime.getHours()); %>
@@ -106,15 +105,38 @@
                                 <%= formattedDateTime %>
                                     <% } %>
             </div>
-            </div>
-
             <div>
-                <% if(submissions.diem_so != null) { %>
+                <% if(submissions.diem_so == null) { %>
+                    <form id="markForm" action="/submission/math" method="get">
+                        <input type="hidden" id="submissionID" name="submissionID" value="<%= submissions.submissionID %>" required>
+                                    
+                        <label for="diem_so">Điểm số:</label>
+                        <input type="number" id="diem_so" name="diem_so" required>
+                        <div><br></div>
+                
+                        <button type="submit" class="button w-button">Nhập Điểm</button>
+                    </form>
+                <% } else { %>
                     <div>
                         <h4>Điểm số: <%= submissions.diem_so %></h4>
                     </div>
                 <% } %>
-                    
+                
+
+                <script>
+                    function submitForm() {
+                        var submissionID = document.getElementById('submissionID').value;
+                        var diem_so = document.getElementById('diem_so').value;
+            
+                        if (submissionID && diem_so) {  
+                            window.location.href = '/submission/math?submissionID=' + encodeURIComponent(submissionID) + '&diem_so=' + encodeURIComponent(diem_so);
+                        } else {
+                            alert('Vui lòng nhập cả submissionID và điểm số.');
+                        }
+                    }
+                </script>
+
+            </div>
             </div>
             
             <div class="content-grid">
@@ -128,14 +150,10 @@
                 </div>
                 <div class="right-sidebar_wrapper">
                     <div class="sticky-sidebar">
-                        <% if (submissions.ngay_nop !== null) { %>
-                            <div class="section-title">Bạn đã nộp bài tập</div>
-                            <% } else { %>
                             <div class="section-title">Bài tập</div>
-                            <% } %> 
                         <div class="card right-sidebar">
                             <div class="card right-sidebar">
-                    <% const pathArray=assignments.documentPath.replace(/\\/g, '/' ).split('/'); %>
+                    <% const pathArray=submissions.noi_dung.replace(/\\/g, '/' ).split('/'); %>
                         <a href="/download?pathname=<%= encodeURIComponent(pathArray.slice(0, -1).join('/')) %>&filename=<%= encodeURIComponent(pathArray.slice(-1)[0]) %>"
                             class="assets-link w-inline-block" download>
                             <img
@@ -153,25 +171,26 @@
                             <% } %>
                             
                         </div>
-                        <div>
-                            <form action="/assignments/detail/submit/<%= submissions.submissionID %>" method="post" enctype="multipart/form-data">
-                                <input type="file" name="submit-doc" id="submit-doc" accept=".docx, .pdf" required>
-                            
-                                <br style="margin-top: 10px;">
-                                <input type="hidden" name="submissionID" id="submissionID" value="<%= submissions.submissionID %>" required>
-                                <input type="hidden" name="courseID" id="courseID" value="<%= assignments.courseID %>" required>   
-                                <input type="hidden" name="ngay_nop" id="ngay_nop" value="<%= submissions.ngay_nop || '' %>" required>
-                            
-                                <div><br></div>
-                                <% if (submissions.ngay_nop !== null) { %>
-                                    <button type="submit" class="button w-button">Chỉnh sửa bài tập</button>
-                                <% } else { %>
-                                    <button type="submit" class="button w-button">Nộp bài tập</button>
-                                <% } %> 
-                            </form>
-                            
                         
+                        <div class="section-title top-margin"></div>
+                        <div class="w-dyn-list">
+                            <div role="list" class="w-dyn-items">
+                                <div role="listitem" class="w-dyn-item">
+                                    <div class="card right-sidebar">
+                                        <h1 class="card-title small">Sinh viên</h1>
+                                        </a><a href="#"
+                                            class="author-info lower-margin w-inline-block"><img alt=""
+                                                src="https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash.jpg"
+                                                sizes="30.000001907348633px"
+                                                srcset="https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash-p-500.jpeg 500w, https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash-p-800.jpeg 800w, https://assets-global.website-files.com/5ec0480d4930cd200885acbd/5ec2f382879ec946c4fd75bd_juan-encalada-WC7KIHo13Fc-unsplash.jpg 1000w"
+                                                class="avatar" />
+                                            <div class="author-name"><%= submissionStudent.email %></div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        
                         
                     </div>
                 </div>
@@ -245,7 +264,6 @@
                 success: function (data) {
                     if (data.loggedIn) {
                         $('#user-email').html(data.userEmail);
-                        $('#user-role').html(data.userRole);
                         $('#login-logout-text').html('Logout');
                     } else {
                         $('#user-email').html('');

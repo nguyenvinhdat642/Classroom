@@ -52,6 +52,22 @@ class Assignment {
     });
   }
 
+  static async getSubmission(submissionID) {
+    return new Promise((resolve, reject) => {
+        connection.query(
+            'SELECT * FROM submissions WHERE submissionID = ?',
+            [submissionID],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results[0]);
+                }
+            }
+        );
+    });
+  }
+
   static async getSubmissionStudents(studentIDs) {
     const promises = studentIDs.map(studentID => {
         return new Promise((resolve, reject) => {
@@ -94,6 +110,23 @@ class Assignment {
     });
   }
 
+  static async getStudentbySubmission(userID) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT * FROM users WHERE userID = ?',
+        [userID],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results[0]);
+          }
+        }
+      );
+    });
+  }
+
+
   static async getSubmissionByID(assignmentID) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -107,6 +140,21 @@ class Assignment {
     });
   }
 
+  static async updateMark(submissionID, diem_so) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE submissions SET diem_so = ? WHERE submissionID = ?',
+        [diem_so, submissionID],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  }
 
 
   

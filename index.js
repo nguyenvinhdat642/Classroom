@@ -80,6 +80,9 @@ app.get('/assignment/detail/:assignmentID', assignmentController.getAssignmentID
 
 const submissionController = require("./controllers/submissionController")
 app.post('/assignments/detail/submit/:assignmentID', submissionController.createSubmission);
+app.get('/submission/student/:submissionID', submissionController.getSubmission);
+app.get('/submission/math/', submissionController.getMark);
+
 
 
 
