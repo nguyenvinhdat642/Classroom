@@ -3,6 +3,8 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
 const Assignment = require('../models/assignment');
+const axios = require('axios');
+
 
 
 
@@ -54,18 +56,31 @@ const submissionController = {
     
     
                 const submissionData = {
-                    submissionID, 
+                    submissionID,
+                    courseID, 
                     noi_dung, 
-                    ngay_nop       
+                    ngay_nop,
+                    userEmail: studentEmail,       
                 };
     
-                const result = Assignment.submissionsByStudent(submissionData);
+                // const result = Assignment.submissionsByStudent(submissionData);
+                axios.post('http://localhost:3000/assignments/detail/submit/' + submissionID, submissionData)
+                    .then(response => {
+                        console.log('Response:', response.data);
+                        res.redirect('/lesson/' + encodeURIComponent(courseID));
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error.response.data);
+                        res.status(500).json({ error: 'Lỗi khi tạo bài tập' });
+
+                    });
     
-                if (result) {
-                    res.redirect('/lesson/' + encodeURIComponent(courseID));
-                } else {
-                    res.status(500).json({ error: 'Lỗi khi nộp bài tập' });
-                }
+                // if (result) {
+                //     res.redirect('/lesson/' + encodeURIComponent(courseID));
+                // } else {
+                //     res.status(500).json({ error: 'Lỗi khi nộp bài tập' });
+                // }
             });
         } catch (error) {
             console.error(error);

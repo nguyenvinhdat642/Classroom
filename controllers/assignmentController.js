@@ -3,6 +3,8 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const axios = require('axios');
+
 
 
 const storage = multer.diskStorage({
@@ -112,23 +114,57 @@ const assignmentController = {
                 const { courseID, 'lesson-title': assignmentName, deadline, 'lesson-content': content } = req.body;
                 const teacherEmail = req.session.user.email;
                 const filePath = path.join(__dirname, `../public/files/${courseID}/${teacherEmail}`, req.file.originalname);
+                console.log("kiểm tra json");
+                console.log(req.body);
+                const file = req.file.buffer
+                console.log(req.file.buffer);
+
 
                 const assignmentData = {
                     courseID,
                     assignmentName,
+                    ngaytao: new Date(),
                     deadline,
                     content,
                     documentPath: filePath,
                     userID: req.session.user.userID,
                 };
 
-                const result = await Assignment.createAssignment(assignmentData);
+                // const result = await Assignment.createAssignment(assignmentData);
 
-                if (result) {
-                    res.redirect('/lesson/' + encodeURIComponent(courseID));
-                } else {
-                    res.status(500).json({ error: 'Lỗi khi tạo bài tập' });
-                }
+
+                // Dữ liệu cần gửi đi
+                const requestData = {
+                    courseID: courseID,
+                    'lesson-title': assignmentName,
+                    deadline: deadline,
+                    'lesson-content': content,
+                    'lesson-doc': filePath,
+                    userEmail: req.session.user.email,
+                    teacherID: req.session.user.userID
+                };
+
+                console.log('Request:', requestData);
+
+                // Gửi yêu cầu POST đến API
+                axios.post('http://localhost:3000/assignments/create-assignment', requestData)
+                    .then(response => {
+                        console.log('Response:', response.data);
+                        res.redirect('/lesson/' + encodeURIComponent(courseID));
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error.response.data);
+                        res.status(500).json({ error: 'Lỗi khi tạo bài tập' });
+
+                    });
+
+
+                // if (result) {
+                //     res.redirect('/lesson/' + encodeURIComponent(courseID));
+                // } else {
+                //     res.status(500).json({ error: 'Lỗi khi tạo bài tập' });
+                // }
             });
         } catch (error) {
             console.error(error);
@@ -169,6 +205,7 @@ const assignmentController = {
                 const assignments = await Assignment.getAssignmentById(assignmentID);
                 console.log(assignmentID, userID);
                 console.log(assignments);
+                console.log(submissions);
                 res.render('user/assignment-info', { assignments: assignments, submissions: submissions });
 
 

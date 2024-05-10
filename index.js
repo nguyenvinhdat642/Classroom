@@ -54,10 +54,16 @@ app.use(authController);
 
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Login', message: req.flash('error') });
-});
+}); 
 
 app.get('/register', (req, res) => {
     res.render('register', { title: 'Register' });
+});
+
+app.post('/test', (req, res) => {
+    console.log(req.body);
+    console.log("Test");
+    res.send('OK');
 });
 
 const lessonController = require('./controllers/lessonController');
