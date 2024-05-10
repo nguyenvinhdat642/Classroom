@@ -7,10 +7,10 @@ const { google } = require('googleapis');
 const OAuth2Client = google.auth.OAuth2;
 const router = express.Router();
 
-const GOOGLE_MAILER_CLIENT_ID = '495540254897-7m09965sumcm5dg4bksoruihagucri0u.apps.googleusercontent.com';
-const GOOGLE_MAILER_CLIENT_SECRET = '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';
-const GOOGLE_MAILER_REFRESH_TOKEN = '1//04LM98RSZhuPHCgYIARAAGAQSNwF-L9Ir6cSpTriQsFc7xmTkjf8uVsJnuR5HLXqgxeyLAgOFQYiksYpa1HjMJtPv9Pp622_xCRc';
-const ADMIN_EMAIL_ADDRESS = 'vinhdatgg09@gmail.com';
+const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID;
+const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_MAILER_CLIENT_SECRET;
+const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_MAILER_REFRESH_TOKEN;
+const ADMIN_EMAIL_ADDRESS = process.env.ADMIN_EMAIL_ADDRESS;
 
 const myOAuth2Client = new OAuth2Client(GOOGLE_MAILER_CLIENT_ID, GOOGLE_MAILER_CLIENT_SECRET);
 myOAuth2Client.setCredentials({
