@@ -15,6 +15,11 @@ app.post('/assignments/detail/submit/:assignmentID', submissionController.create
 app.get('/submission/student/:submissionID', submissionController.getSubmission);
 app.get('/submission/math/', submissionController.getMark);
 
+const quizController = require('./API/quizController');
+app.post('/quizzes/', quizController.createQuiz);
+app.post('/quizzes/:quizId/questions', quizController.addQuestion);
+app.get('/quizzes/:quizId', quizController.getQuiz);
+app.post('/quizzes/:quizId/submit', quizController.submitQuiz);
 
 
 app.listen(port, () => {

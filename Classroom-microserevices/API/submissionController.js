@@ -3,6 +3,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
 const Assignment = require('../models/assignment');
+const RabitMQ_csm = require('../models/RabitMQ_csm');
 
 
 
@@ -82,8 +83,33 @@ const submissionController = {
                 } else {
                     return res.status(500).json({ error: 'Lỗi khi nộp bài tập' });
                 }
-});
+            });
         } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        }
+    },
+
+    createSubmissionMQ: async (req, res) => {
+        try {
+            const { courseID, submissionID, ngay_nop, noi_dung} = await RabitMQ_csm.consumeFromQueue();        
+        
+        
+            const submissionData = {
+                submissionID, 
+                noi_dung, 
+                ngay_nop       
+            };
+
+            const result = Assignment.submissionsByStudent(submissionData);
+
+            if (result) {
+                return res.status(200).json({ success: 'Nộp bài tập thành công' });
+            } else {
+                return res.status(500).json({ error: 'Lỗi khi nộp bài tập' });
+            }
+        }
+        catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error', details: error.message });
         }

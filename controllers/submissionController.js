@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp');
 const multer = require('multer');
 const Assignment = require('../models/assignment');
 const axios = require('axios');
+const RabitMQ_pdc = require('../models/RabitMQ_pdc');
 
 
 
@@ -55,13 +56,15 @@ const submissionController = {
                 const noi_dung = filePath + '/' + req.file.originalname;
     
     
-                const submissionData = {
+                const submissionData = { 
                     submissionID,
                     courseID, 
                     noi_dung, 
                     ngay_nop,
                     userEmail: studentEmail,       
                 };
+
+                // const sendSubmission = await RabitMQ_pdc.producer(submissionData);
     
                 // const result = Assignment.submissionsByStudent(submissionData);
                 axios.post('http://localhost:3000/assignments/detail/submit/' + submissionID, submissionData)

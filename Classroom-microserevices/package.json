@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.10.4",
+    "async": "^3.2.5",
     "axios": "^1.6.8",
     "express": "^4.19.2",
     "mysql2": "^3.9.7"
